@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ThemeService } from '../../theme.service';
 
 @Component({
   selector: 'app-header',
@@ -11,15 +12,17 @@ import { CommonModule } from '@angular/common';
 export class HeaderComponent {
   @Output() toggleSidebar = new EventEmitter<void>();
 
-  theme = signal('cupcake');
+  themeService = inject(ThemeService);
 
   toggleTheme() {
-    const newTheme = this.theme() === 'cupcake' ? 'abyss' : 'cupcake';
-    this.theme.set(newTheme);
-    document.body.setAttribute('data-theme', newTheme);
+    this.themeService.toggleTheme();
   }
 
   onToggleSidebar() {
     this.toggleSidebar.emit();
+  }
+
+  get theme() {
+    return this.themeService.theme;
   }
 }
