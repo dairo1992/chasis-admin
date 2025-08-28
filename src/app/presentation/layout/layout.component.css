@@ -1,0 +1,38 @@
+.sidebar {
+  width: 256px; /* 16rem */
+  transition: width 0.3s ease;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.collapsed {
+  width: 80px; /* w-20 */
+}
+
+.sidebar.expanded {
+  width: 256px; /* w-64 */
+}
+
+.menu-text {
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .menu-text {
+  opacity: 0;
+}
+
+.sidebar.expanded .menu-text {
+  opacity: 1;
+}
+
+.header {
+  height: 64px; /* h-16 */
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
