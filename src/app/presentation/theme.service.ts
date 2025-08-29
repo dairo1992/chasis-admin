@@ -5,7 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
   providedIn: 'root'
 })
 export class ThemeService {
-  theme = signal('light');
+  theme = signal('garden');
   platformId = inject(PLATFORM_ID);
 
   constructor() {
@@ -19,7 +19,7 @@ export class ThemeService {
   }
 
   toggleTheme() {
-    const newTheme = this.theme() === 'light' ? 'abyss' : 'light';
+    const newTheme = this.theme() === 'garden' ? 'abyss' : 'garden';
     this.theme.set(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
     if (isPlatformBrowser(this.platformId)) {
