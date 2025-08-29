@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { LayoutComponent } from './presentation/layout/layout.component';
-import { HomeComponent } from './presentation/home/home.component';
+import { LayoutComponent } from '../../common/layout/layout.component';
+import { HomeComponent } from '../../features/home/presentation/home.component';
 
 export const routes: Routes = [
     {

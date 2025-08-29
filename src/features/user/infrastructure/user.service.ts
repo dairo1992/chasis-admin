@@ -1,8 +1,8 @@
 
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { GetUserUseCase } from '../../application/get-user.usecase';
-import { User } from '../../domain/user.entity';
+import { GetUserUseCase } from '../application/get-user.usecase';
+import { User } from '../domain/user.entity';
 
 @Injectable({
     providedIn: 'root'
