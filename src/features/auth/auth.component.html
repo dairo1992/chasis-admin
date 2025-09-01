@@ -1,0 +1,43 @@
+<div class="flex items-center justify-center min-h-screen bg-base-200">
+  <div class="card w-full max-w-sm shrink-0 bg-base-100 shadow-2xl">
+    <form class="card-body" [formGroup]="loginForm" (ngSubmit)="login()">
+      <h1 class="card-title">Login</h1>
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Email</span>
+        </label>
+        <input type="email" placeholder="email" class="input input-bordered"
+               formControlName="email" required
+               [ngClass]="{ 'input-error': f['email'].touched && f['email'].invalid, 'input-success': f['email'].valid }" />
+        @if (f['email'].touched && f['email'].errors) {
+          <div class="label">
+            @if (f['email'].errors['required']) {
+              <span class="label-text-alt text-error">Email is required.</span>
+            }
+            @if (f['email'].errors['email']) {
+              <span class="label-text-alt text-error">Email is invalid.</span>
+            }
+          </div>
+        }
+      </div>
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Password</span>
+        </label>
+        <input type="password" placeholder="password" class="input input-bordered"
+               formControlName="password" required
+               [ngClass]="{ 'input-error': f['password'].touched && f['password'].invalid, 'input-success': f['password'].valid }" />
+        @if (f['password'].touched && f['password'].errors) {
+          <div class="label">
+            @if (f['password'].errors['required']) {
+              <span class="label-text-alt text-error">Password is required.</span>
+            }
+          </div>
+        }
+      </div>
+      <div class="form-control mt-6">
+        <button class="btn btn-primary" type="submit" [disabled]="loginForm.invalid">Login</button>
+      </div>
+    </form>
+  </div>
+</div>

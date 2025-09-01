@@ -3,18 +3,25 @@ import { Routes } from '@angular/router';
 import { LayoutComponent } from '../common/layout/layout.component';
 import { HomeComponent } from '../features/home/presentation/home.component';
 import { FeatureFactory } from '../common/factories/feature.factory';
+import { authGuard } from '../features/auth/application/auth.guard';
 
 // Importar y registrar features
 import '../features/user/user-feature.module';
+import '../features/auth/auth-feature.module';
 
 // Función para construir rutas dinámicamente
 function buildRoutes(): Routes {
   const featureRoutes = FeatureFactory.getAllRoutes();
-  
+
   return [
+    {
+        path: 'auth',
+        loadComponent: () => import('../features/auth/auth.component')
+    },
     {
       path: '',
       component: LayoutComponent,
+      canActivate: [authGuard],
       children: [
         {
           path: '',
@@ -25,11 +32,11 @@ function buildRoutes(): Routes {
           }
         },
         ...featureRoutes,
-        {
-          path: '**',
-          redirectTo: ''
-        }
       ]
+    },
+    {
+        path: '**',
+        redirectTo: 'auth'
     }
   ];
 }
