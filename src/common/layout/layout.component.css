@@ -1,3 +1,4 @@
+/* src/common/layout/layout.component.css */
 .sidebar {
   width: 256px; /* 16rem */
   transition: width 0.3s ease;
@@ -35,4 +36,163 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+/* Estilos generales del menú */
+.menu a, .menu details summary {
+  font-weight: 600; /* Semi-bold para todo el menú */
+}
+
+.menu svg {
+  font-weight: bold;
+  stroke-width: 2; /* Iconos más gruesos */
+}
+
+/* Estilos para el collapsible menu */
+.menu details summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 700; /* Bold para títulos principales */
+}
+
+.menu details summary:hover {
+  background: linear-gradient(135deg, var(--fallback-b2, oklch(var(--b2))), var(--fallback-b3, oklch(var(--b3))));
+  transform: translateX(4px);
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.menu details[open] summary {
+  background: linear-gradient(135deg, var(--fallback-p, oklch(var(--p) / 0.1)), var(--fallback-p, oklch(var(--p) / 0.05)));
+  border-left: 4px solid var(--fallback-p, oklch(var(--p)));
+  font-weight: 800; /* Extra bold para item expandido */
+}
+
+/* Estilos para submenús */
+.menu details ul {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--fallback-bc, oklch(var(--bc) / 0.2));
+  background: linear-gradient(to bottom, transparent, var(--fallback-b1, oklch(var(--b1) / 0.5)));
+}
+
+.menu details ul li a {
+  padding: 0.75rem 1rem;
+  margin: 0.25rem 0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600; /* Semi-bold para submenús */
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.menu details ul li a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--fallback-p, oklch(var(--p) / 0.1)), transparent);
+  transition: width 0.3s ease;
+  z-index: -1;
+}
+
+.menu details ul li a:hover {
+  opacity: 1;
+  background: linear-gradient(135deg, var(--fallback-b2, oklch(var(--b2))), var(--fallback-b3, oklch(var(--b3))));
+  transform: translateX(6px);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  font-weight: 700; /* Bold en hover */
+}
+
+.menu details ul li a:hover::before {
+  width: 100%;
+}
+
+/* Animación del ícono de flecha en summary */
+.menu details summary::marker {
+  display: none;
+}
+
+.menu details summary::-webkit-details-marker {
+  display: none;
+}
+
+.menu details summary::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  margin-left: auto;
+  transition: transform 0.2s;
+  opacity: 0.6;
+}
+
+.menu details[open] summary::after {
+  transform: rotate(90deg);
+}
+
+/* Ocultar flechas cuando el sidebar está colapsado */
+.sidebar.collapsed .menu details summary::after {
+  display: none;
+}
+
+/* Estilos para items activos */
+.menu a.active {
+  background: linear-gradient(135deg, var(--fallback-p, oklch(var(--p))), var(--fallback-p, oklch(var(--p) / 0.8)));
+  color: var(--fallback-pc, oklch(var(--pc)));
+  font-weight: 800; /* Extra bold para item activo */
+  transform: translateX(6px);
+  box-shadow: 
+    4px 4px 16px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-left: 4px solid var(--fallback-pc, oklch(var(--pc)));
+  animation: activeItemPulse 2s ease-in-out infinite;
+}
+
+.menu a.active svg {
+  color: var(--fallback-pc, oklch(var(--pc))) !important;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+  stroke-width: 2.5; /* Iconos más gruesos para item activo */
+}
+
+/* Smooth transitions para el colapso */
+.sidebar * {
+  transition: all 0.3s ease;
+}
+
+/* Estilos adicionales para texto en negrita */
+.menu-text {
+  font-weight: 700; /* Bold para texto del menú */
+}
+
+/* Indicador visual para item con submenús */
+.menu details summary {
+  position: relative;
+}
+
+.menu details summary::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 5px solid currentColor;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  margin-left: auto;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2));
+}
+
+.menu details[open] summary::after {
+  transform: rotate(90deg);
+  opacity: 1;
 }
