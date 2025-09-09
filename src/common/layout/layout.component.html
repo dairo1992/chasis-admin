@@ -1,163 +1,87 @@
 <!-- src/common/layout/layout.component.html -->
-<div class="flex h-screen bg-base-100">
+<div class="flex h-screen bg-base-200 text-base-content">
   <!-- Sidebar -->
-  <div class="sidebar bg-gradient-to-b from-base-200 to-base-300 shadow-2xl border-r border-base-300/50"
-    [ngClass]="{ 'collapsed': isCollapsed && !isExpandedOnHover, 'expanded': !isCollapsed || isExpandedOnHover }"
-    (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+  <div class="sidebar" 
+       [ngClass]="{ 'collapsed': isCollapsed && !isExpandedOnHover, 'expanded': !isCollapsed || isExpandedOnHover }"
+       (mouseenter)="onMouseEnter()" 
+       (mouseleave)="onMouseLeave()">
     
-    <!-- Header del Sidebar -->
-    <div class="sidebar-header relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 opacity-50"></div>
-      <div class="relative flex items-center justify-between p-4">
-        @if (!isCollapsed || isExpandedOnHover) {
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-lg">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <div>
-            <h1 class="font-bold text-lg bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Chasis Admin
-            </h1>
-            <p class="text-xs text-base-content/60 font-medium">Dashboard Pro</p>
-          </div>
-        </div>
-        } @else {
-        <div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center shadow-lg mx-auto">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-              d="M13 10V3L4 14h7v7l9-11h-7z" />
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+      <div class="flex items-center gap-3">
+        <div class="icon-wrapper">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
-        }
+        <span class="app-title" *ngIf="!isCollapsed || isExpandedOnHover">Chasis Admin</span>
       </div>
-      <div class="h-px bg-gradient-to-r from-transparent via-base-content/20 to-transparent"></div>
     </div>
 
     <!-- Dynamic Menu -->
-    <div class="menu-container flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-base-content/20 scrollbar-track-transparent">
-      <ul class="menu p-4 space-y-1">
-        @for (menuItem of menuItems(); track menuItem.label) {
-        @if (menuItem.children && menuItem.children.length > 0) {
-        <!-- Collapsible submenu -->
-        <li class="menu-item-group">
-          <details [open]="isMenuItemExpanded(menuItem.label)">
-            <summary class="menu-summary group" (click)="toggleMenuItem(menuItem.label)">
-              <div class="menu-icon-wrapper">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
-                  stroke="currentColor" class="menu-icon">
-                  <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menuItem.icon" />
-                </svg>
-              </div>
-              @if (!isCollapsed || isExpandedOnHover) {
-              <span class="menu-text">{{ menuItem.label }}</span>
-              <div class="menu-badge">{{ menuItem.children?.length }}</div>
-              }
-              <div class="menu-arrow"></div>
-            </summary>
-            @if (!isCollapsed || isExpandedOnHover) {
-            <ul class="submenu">
-              @for (subItem of menuItem.children; track subItem.label) {
-              <li>
-                <a [routerLink]="subItem.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-                  (click)="onMenuItemClick()" class="submenu-link group">
-                  <div class="submenu-icon-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                      stroke="currentColor" class="submenu-icon">
-                      <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="subItem.icon" />
+    <div class="menu-container">
+      <ul class="menu">
+        <ng-container *ngFor="let menuItem of menuItems()">
+          <li class="menu-item-group" *ngIf="menuItem.children && menuItem.children.length > 0; else simpleItem">
+            <details [open]="isMenuItemExpanded(menuItem.label)">
+              <summary class="menu-summary" (click)="toggleMenuItem(menuItem.label)">
+                <div class="flex items-center gap-3">
+                  <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menuItem.icon"></path>
+                  </svg>
+                  <span class="menu-text" *ngIf="!isCollapsed || isExpandedOnHover">{{ menuItem.label }}</span>
+                </div>
+                <i class="menu-arrow" *ngIf="!isCollapsed || isExpandedOnHover"></i>
+              </summary>
+              <ul class="submenu" *ngIf="!isCollapsed || isExpandedOnHover">
+                <li *ngFor="let subItem of menuItem.children">
+                  <a [routerLink]="subItem.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="onMenuItemClick()" class="submenu-link">
+                    <svg class="submenu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="subItem.icon"></path>
                     </svg>
-                  </div>
-                  <span class="submenu-text">{{ subItem.label }}</span>
-                  <div class="submenu-indicator"></div>
-                </a>
-              </li>
-              }
-            </ul>
-            }
-          </details>
-        </li>
-        } @else {
-        <!-- Simple menu item -->
-        <li class="menu-item">
-          <a [routerLink]="menuItem.path || '/'" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-            (click)="onMenuItemClick()" class="menu-link group">
-            <div class="menu-icon-wrapper">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
-                class="menu-icon">
-                <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menuItem.icon" />
-              </svg>
-            </div>
-            @if (!isCollapsed || isExpandedOnHover) {
-            <span class="menu-text">{{ menuItem.label }}</span>
-            }
-            <div class="menu-indicator"></div>
-          </a>
-        </li>
-        }
-        }
+                    <span>{{ subItem.label }}</span>
+                  </a>
+                </li>
+              </ul>
+            </details>
+          </li>
+          <ng-template #simpleItem>
+            <li class="menu-item">
+              <a [routerLink]="menuItem.path || '/'" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="onMenuItemClick()" class="menu-link">
+                <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menuItem.icon"></path>
+                </svg>
+                <span class="menu-text" *ngIf="!isCollapsed || isExpandedOnHover">{{ menuItem.label }}</span>
+              </a>
+            </li>
+          </ng-template>
+        </ng-container>
       </ul>
     </div>
 
-    <!-- Footer del sidebar -->
-    <div class="sidebar-footer mt-auto">
-      <div class="h-px bg-gradient-to-r from-transparent via-base-content/20 to-transparent mb-4"></div>
-      
-      @if (!isCollapsed || isExpandedOnHover) {
-      <div class="p-4">
-        <div class="user-profile group">
-          <div class="flex items-center gap-3">
-            <div class="avatar-wrapper">
-              <div class="avatar placeholder">
-                <div class="bg-gradient-to-br from-primary to-secondary text-white rounded-full w-10 h-10 shadow-lg">
-                  <span class="text-sm font-bold">JD</span>
-                </div>
-              </div>
-              <div class="status-indicator"></div>
-            </div>
-            <div class="user-info flex-1 min-w-0">
-              <p class="text-sm font-semibold text-base-content truncate">John Doe</p>
-              <p class="text-xs text-base-content/60 truncate">john.doe@example.com</p>
-              <div class="flex items-center gap-1 mt-1">
-                <div class="w-2 h-2 bg-success rounded-full"></div>
-                <span class="text-xs text-success font-medium">En línea</span>
-              </div>
-            </div>
-            <button class="settings-btn opacity-0 group-hover:opacity-100 transition-opacity">
-              <svg class="w-4 h-4 text-base-content/60 hover:text-base-content" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-      } @else {
-      <div class="p-4 flex justify-center">
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <div class="user-profile">
         <div class="avatar placeholder">
-          <div class="bg-gradient-to-br from-primary to-secondary text-white rounded-full w-8 h-8 shadow-lg">
-            <span class="text-xs font-bold">JD</span>
+          <div class="bg-primary text-primary-content rounded-full w-10 h-10">
+            <span class="text-sm font-bold">JD</span>
           </div>
         </div>
+        <div class="user-info" *ngIf="!isCollapsed || isExpandedOnHover">
+          <p class="font-semibold">John Doe</p>
+          <p class="text-xs opacity-60">john.doe@example.com</p>
+        </div>
       </div>
-      }
     </div>
   </div>
 
   <!-- Main content -->
   <div class="flex-1 flex flex-col overflow-hidden">
-    <!-- Header -->
     <app-header (toggleSidebar)="toggleSidebar()"></app-header>
-
-    <!-- Breadcrumb -->
-    <div class="px-4 py-2 bg-base-50 border-b border-base-200">
+    <div class="px-6 py-4 bg-base-100 border-b border-base-300">
       <app-breadcrumb></app-breadcrumb>
     </div>
-
-    <!-- Page content -->
-    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-base-100 p-4">
+    <main class="flex-1 overflow-y-auto bg-base-100 p-6">
       <router-outlet></router-outlet>
     </main>
   </div>
