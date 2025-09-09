@@ -1,11 +1,10 @@
 <!-- src/common/layout/layout.component.html -->
 <div class="flex h-screen bg-base-200 text-base-content">
   <!-- Sidebar -->
-  <div class="sidebar" 
-       [ngClass]="{ 'collapsed': isCollapsed && !isExpandedOnHover, 'expanded': !isCollapsed || isExpandedOnHover }"
-       (mouseenter)="onMouseEnter()" 
-       (mouseleave)="onMouseLeave()">
-    
+  <div class="sidebar"
+    [ngClass]="{ 'collapsed': isCollapsed && !isExpandedOnHover, 'expanded': !isCollapsed || isExpandedOnHover }"
+    (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+
     <!-- Sidebar Header -->
     <div class="sidebar-header">
       <div class="flex items-center gap-3">
@@ -26,7 +25,8 @@
             <details [open]="isMenuItemExpanded(menuItem.label)">
               <summary class="menu-summary" (click)="toggleMenuItem(menuItem.label)">
                 <div class="flex items-center gap-3">
-                  <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menuItem.icon"></path>
                   </svg>
                   <span class="menu-text" *ngIf="!isCollapsed || isExpandedOnHover">{{ menuItem.label }}</span>
@@ -35,8 +35,10 @@
               </summary>
               <ul class="submenu" *ngIf="!isCollapsed || isExpandedOnHover">
                 <li *ngFor="let subItem of menuItem.children">
-                  <a [routerLink]="subItem.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="onMenuItemClick()" class="submenu-link">
-                    <svg class="submenu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <a [routerLink]="subItem.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+                    (click)="onMenuItemClick()" class="submenu-link">
+                    <svg class="submenu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                      stroke-width="1.5" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="subItem.icon"></path>
                     </svg>
                     <span>{{ subItem.label }}</span>
@@ -47,8 +49,10 @@
           </li>
           <ng-template #simpleItem>
             <li class="menu-item">
-              <a [routerLink]="menuItem.path || '/'" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="onMenuItemClick()" class="menu-link">
-                <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <a [routerLink]="menuItem.path || '/'" routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }" (click)="onMenuItemClick()" class="menu-link">
+                <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menuItem.icon"></path>
                 </svg>
                 <span class="menu-text" *ngIf="!isCollapsed || isExpandedOnHover">{{ menuItem.label }}</span>
@@ -60,19 +64,36 @@
     </div>
 
     <!-- Sidebar Footer -->
-    <div class="sidebar-footer">
-      <div class="user-profile">
-        <div class="avatar placeholder">
-          <div class="bg-primary text-primary-content rounded-full w-10 h-10">
-            <span class="text-sm font-bold">JD</span>
+    @if (!isCollapsed || isExpandedOnHover) {
+    <div class="p-4">
+      <div class="user-profile group">
+        <div class="flex items-center gap-3">
+          <div class="user-info flex-1 min-w-0">
+            <p class="text-sm font-semibold text-base-content truncate">{{ user()?.['name'] }}</p>
+            <p class="text-xs text-base-content/60 truncate">{{ user()?.['email'] }}</p>
+            <div class="flex items-center gap-1 mt-1 cursor-pointer" (click)="logout()">
+              <button class="settings-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+                </svg>
+              </button>
+              <span class="text-xs text-base-content font-medium">Salir</span>
+            </div>
           </div>
-        </div>
-        <div class="user-info" *ngIf="!isCollapsed || isExpandedOnHover">
-          <p class="font-semibold">John Doe</p>
-          <p class="text-xs opacity-60">john.doe@example.com</p>
         </div>
       </div>
     </div>
+    } @else {
+    <div class="p-4 flex justify-center">
+      <div class="avatar placeholder">
+        <div class="bg-gradient-to-br from-primary to-secondary text-white rounded-full w-8 h-8 shadow-lg">
+          <span class="text-xs font-bold text-center">{{ user()?.['name'].substring(0, 2).toUpperCase() }}</span>
+        </div>
+      </div>
+    </div>
+    }
   </div>
 
   <!-- Main content -->

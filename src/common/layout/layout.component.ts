@@ -9,6 +9,8 @@ import { AlertComponent } from '../components/alert/alert.component';
 import { MenuItem } from '../services/route-config.service';
 import { MenuBuilderService, MenuContext } from '../services/menu-builder.service';
 import { FeatureFactory } from '../factories/feature.factory';
+import { RecordModel } from 'pocketbase';
+import { AuthService } from '../../features/auth/infrastructure/auth.service';
 
 @Component({
   selector: 'app-layout',
@@ -16,34 +18,37 @@ import { FeatureFactory } from '../factories/feature.factory';
   styleUrls: ['./layout.component.css'],
   standalone: true,
   imports: [
-    RouterOutlet, 
+    RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    CommonModule, 
-    HeaderComponent, 
+    CommonModule,
+    HeaderComponent,
     BreadcrumbComponent,
     AlertComponent
   ]
 })
 export class LayoutComponent implements OnInit {
   private menuBuilderService = inject(MenuBuilderService);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
   isCollapsed = false;
   isExpandedOnHover = false;
-  
+  user = signal<RecordModel | null>(null);
+
   // Signals para reactive updates
   menuItems = signal<MenuItem[]>([]);
   expandedMenuItems = signal<Set<string>>(new Set());
 
   ngOnInit() {
     this.initializeMenuItems();
+    this.user.set(this.authService.getCurrentUser());
   }
 
   private initializeMenuItems() {
     // Obtener items del menú desde la factory
     const rawMenuItems = FeatureFactory.getAllMenuItems();
-    
+
     // Agregar item de Home manualmente
     const homeMenuItem: MenuItem = {
       label: 'Home',
@@ -53,7 +58,7 @@ export class LayoutComponent implements OnInit {
     };
 
     const allMenuItems = [homeMenuItem, ...rawMenuItems];
-    
+
     // Construir menú con contexto del usuario
     const menuContext: MenuContext = {
       userRoles: ['admin', 'user'], // Esto vendría del servicio de autenticación
@@ -63,7 +68,7 @@ export class LayoutComponent implements OnInit {
         '/settings': false
       }
     };
-    
+
     const processedMenu = this.menuBuilderService.buildMenu(allMenuItems, menuContext);
     this.menuItems.set(processedMenu);
   }
@@ -93,13 +98,13 @@ export class LayoutComponent implements OnInit {
   toggleMenuItem(label: string) {
     const expanded = this.expandedMenuItems();
     const newExpanded = new Set(expanded);
-    
+
     if (newExpanded.has(label)) {
       newExpanded.delete(label);
     } else {
       newExpanded.add(label);
     }
-    
+
     this.expandedMenuItems.set(newExpanded);
   }
 
@@ -122,5 +127,10 @@ export class LayoutComponent implements OnInit {
   getCurrentBreadcrumb(): MenuItem[] {
     const currentPath = this.router.url;
     return this.menuBuilderService.getBreadcrumb(this.menuItems(), currentPath);
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/auth']);
   }
 }

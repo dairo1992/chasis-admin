@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../infrastructure/auth.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AlertService } from '../../../../common/services/alert.service';
 import { AlertComponent } from "../../../../common/components/alert/alert.component";
 
@@ -18,20 +18,32 @@ export default class AuthComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private alertService = inject(AlertService);
+  private platformId = inject(PLATFORM_ID);
 
   showPassword = false;
   isLoading = signal(false);
 
   loginForm: FormGroup = this.fb.group({
-    email: ['admin@chasis.com', [Validators.required, Validators.email]],
-    password: ['123456', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]],
+    remember: [false]
   });
 
   get f() { return this.loginForm.controls; }
 
   ngOnInit(): void {
-    if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/']);
+    if (isPlatformBrowser(this.platformId)) {
+      if (this.authService.isAuthenticated()) {
+        this.router.navigate(['/']);
+      }
+
+      const rememberedEmail = localStorage.getItem('remember');
+      if (rememberedEmail) {
+        this.loginForm.patchValue({
+          email: rememberedEmail,
+          remember: true
+        });
+      }
     }
   }
 
@@ -50,13 +62,13 @@ export default class AuthComponent implements OnInit {
     }
 
     this.isLoading.set(true);
-    const { email, password } = this.loginForm.value;
-    
+    const { email, password, remember } = this.loginForm.value;
+
     this.authService.login(email, password).subscribe({
       next: (success) => {
         this.isLoading.set(false);
         if (success) {
-          // Small delay to show success message before navigation
+
           setTimeout(() => {
             this.router.navigate(['/']);
           }, 1000);
