@@ -1,198 +1,513 @@
 /* src/common/layout/layout.component.css */
 .sidebar {
-  width: 256px; /* 16rem */
-  transition: width 0.3s ease;
+  width: 280px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
+  backdrop-filter: blur(10px);
 }
 
 .sidebar.collapsed {
-  width: 80px; /* w-20 */
+  width: 80px;
 }
 
 .sidebar.expanded {
-  width: 256px; /* w-64 */
+  width: 280px;
+}
+
+/* Sidebar Header Styles */
+.sidebar-header {
+  position: relative;
+  z-index: 10;
+}
+
+.sidebar-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+}
+
+/* Menu Container */
+.menu-container {
+  position: relative;
+}
+
+.menu-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.menu-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.menu-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.menu-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .menu-text {
-  transition: opacity 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  letter-spacing: 0.025em;
 }
 
 .sidebar.collapsed .menu-text {
   opacity: 0;
+  transform: translateX(-10px);
 }
 
 .sidebar.expanded .menu-text {
   opacity: 1;
+  transform: translateX(0);
 }
 
-.header {
-  height: 64px; /* h-16 */
+/* Menu Items */
+.menu-item, .menu-item-group {
+  position: relative;
+  margin-bottom: 2px;
 }
 
-.menu a {
+.menu-link, .menu-summary {
   display: flex;
   align-items: center;
-  gap: 1rem;
-}
-
-/* Estilos generales del menú */
-.menu a, .menu details summary {
-  font-weight: 600; /* Semi-bold para todo el menú */
-}
-
-.menu svg {
-  font-weight: bold;
-  stroke-width: 2; /* Iconos más gruesos */
-}
-
-/* Estilos para el collapsible menu */
-.menu details summary {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 700; /* Bold para títulos principales */
-}
-
-.menu details summary:hover {
-  background: linear-gradient(135deg, var(--fallback-b2, oklch(var(--b2))), var(--fallback-b3, oklch(var(--b3))));
-  transform: translateX(4px);
-  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.menu details[open] summary {
-  background: linear-gradient(135deg, var(--fallback-p, oklch(var(--p) / 0.1)), var(--fallback-p, oklch(var(--p) / 0.05)));
-  border-left: 4px solid var(--fallback-p, oklch(var(--p)));
-  font-weight: 800; /* Extra bold para item expandido */
-}
-
-/* Estilos para submenús */
-.menu details ul {
-  margin-top: 0.5rem;
-  padding-left: 1rem;
-  border-left: 2px solid var(--fallback-bc, oklch(var(--bc) / 0.2));
-  background: linear-gradient(to bottom, transparent, var(--fallback-b1, oklch(var(--b1) / 0.5)));
-}
-
-.menu details ul li a {
-  padding: 0.75rem 1rem;
-  margin: 0.25rem 0;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 600; /* Semi-bold para submenús */
-  transition: all 0.3s ease;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 }
 
-.menu details ul li a::before {
+.menu-link::before, .menu-summary::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  width: 0;
-  height: 100%;
-  background: linear-gradient(90deg, var(--fallback-p, oklch(var(--p) / 0.1)), transparent);
-  transition: width 0.3s ease;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(var(--p), 0.05) 0%, 
+    rgba(var(--s), 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
   z-index: -1;
 }
 
-.menu details ul li a:hover {
+.menu-link:hover::before, .menu-summary:hover::before {
   opacity: 1;
-  background: linear-gradient(135deg, var(--fallback-b2, oklch(var(--b2))), var(--fallback-b3, oklch(var(--b3))));
-  transform: translateX(6px);
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-  font-weight: 700; /* Bold en hover */
 }
 
-.menu details ul li a:hover::before {
-  width: 100%;
-}
-
-/* Animación del ícono de flecha en summary */
-.menu details summary::marker {
-  display: none;
-}
-
-.menu details summary::-webkit-details-marker {
-  display: none;
-}
-
-.menu details summary::after {
-  content: '';
-  width: 0;
-  height: 0;
-  border-left: 4px solid currentColor;
-  border-top: 4px solid transparent;
-  border-bottom: 4px solid transparent;
-  margin-left: auto;
-  transition: transform 0.2s;
-  opacity: 0.6;
-}
-
-.menu details[open] summary::after {
-  transform: rotate(90deg);
-}
-
-/* Ocultar flechas cuando el sidebar está colapsado */
-.sidebar.collapsed .menu details summary::after {
-  display: none;
-}
-
-/* Estilos para items activos */
-.menu a.active {
-  background: linear-gradient(135deg, var(--fallback-p, oklch(var(--p))), var(--fallback-p, oklch(var(--p) / 0.8)));
-  color: var(--fallback-pc, oklch(var(--pc)));
-  font-weight: 800; /* Extra bold para item activo */
-  transform: translateX(6px);
+.menu-link:hover, .menu-summary:hover {
+  transform: translateX(4px);
   box-shadow: 
-    4px 4px 16px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border-left: 4px solid var(--fallback-pc, oklch(var(--pc)));
-  animation: activeItemPulse 2s ease-in-out infinite;
+    0 4px 12px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
-.menu a.active svg {
-  color: var(--fallback-pc, oklch(var(--pc))) !important;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
-  stroke-width: 2.5; /* Iconos más gruesos para item activo */
-}
-
-/* Smooth transitions para el colapso */
-.sidebar * {
-  transition: all 0.3s ease;
-}
-
-/* Estilos adicionales para texto en negrita */
-.menu-text {
-  font-weight: 700; /* Bold para texto del menú */
-}
-
-/* Indicador visual para item con submenús */
-.menu details summary {
+/* Icon Wrappers */
+.menu-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, 
+    rgba(var(--p), 0.1) 0%, 
+    rgba(var(--s), 0.1) 100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  overflow: hidden;
 }
 
-.menu details summary::after {
+.menu-icon-wrapper::before {
   content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(var(--p), 0.2) 0%, 
+    rgba(var(--s), 0.2) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.menu-link:hover .menu-icon-wrapper::before,
+.menu-summary:hover .menu-icon-wrapper::before {
+  opacity: 1;
+}
+
+.menu-icon {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.menu-link:hover .menu-icon,
+.menu-summary:hover .menu-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 4px rgba(var(--p), 0.3));
+}
+
+/* Menu Badge */
+.menu-badge {
+  background: linear-gradient(135deg, 
+    rgba(var(--p), 0.8) 0%, 
+    rgba(var(--s), 0.8) 100%);
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Menu Arrow */
+.menu-arrow {
   width: 0;
   height: 0;
   border-left: 5px solid currentColor;
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.6;
   margin-left: auto;
-  transition: all 0.3s ease;
-  opacity: 0.7;
-  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2));
 }
 
-.menu details[open] summary::after {
+.sidebar.collapsed .menu-arrow {
+  display: none;
+}
+
+details[open] .menu-arrow {
   transform: rotate(90deg);
   opacity: 1;
 }
+
+/* Menu Indicator */
+.menu-indicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  background: rgba(var(--p), 0.6);
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.menu-link:hover .menu-indicator {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.5);
+}
+
+/* Submenu Styles */
+.submenu {
+  margin-top: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.submenu::before {
+  content: '';
+  position: absolute;
+  left: 30px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, 
+    rgba(var(--p), 0.3) 0%, 
+    rgba(var(--s), 0.3) 100%);
+  border-radius: 1px;
+}
+
+.submenu-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  margin: 2px 0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+}
+
+.submenu-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(var(--p), 0.05) 0%, 
+    rgba(var(--s), 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 10px;
+}
+
+.submenu-link:hover::before {
+  opacity: 1;
+}
+
+.submenu-link:hover {
+  transform: translateX(6px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.submenu-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(var(--p), 0.08);
+  transition: all 0.3s ease;
+}
+
+.submenu-icon {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2;
+  transition: all 0.3s ease;
+}
+
+.submenu-link:hover .submenu-icon-wrapper {
+  background: rgba(var(--p), 0.15);
+  transform: scale(1.05);
+}
+
+.submenu-text {
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.submenu-indicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 3px;
+  background: rgba(var(--s), 0.6);
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.submenu-link:hover .submenu-indicator {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.3);
+}
+
+/* Hide default details markers */
+.menu details summary::marker,
+.menu details summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Active States */
+.menu-link.active, .submenu-link.active {
+  background: linear-gradient(135deg, 
+    rgba(var(--p), 0.9) 0%, 
+    rgba(var(--s), 0.9) 100%);
+  color: white;
+  transform: translateX(6px);
+  box-shadow: 
+    0 8px 25px rgba(var(--p), 0.3),
+    0 4px 10px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-left: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+.menu-link.active .menu-icon,
+.submenu-link.active .submenu-icon {
+  color: white;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  transform: scale(1.1);
+}
+
+.menu-link.active .menu-icon-wrapper,
+.submenu-link.active .submenu-icon-wrapper {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.menu-link.active .menu-text,
+.submenu-link.active .submenu-text {
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.menu-link.active .menu-indicator,
+.submenu-link.active .submenu-indicator {
+  background: white;
+  opacity: 1;
+  transform: translateY(-50%) scale(1.5);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+/* User Profile Styles */
+.sidebar-footer {
+  position: relative;
+  z-index: 10;
+}
+
+.user-profile {
+  position: relative;
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, 
+    rgba(var(--p), 0.05) 0%, 
+    rgba(var(--s), 0.05) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.user-profile:hover {
+  background: linear-gradient(135deg, 
+    rgba(var(--p), 0.1) 0%, 
+    rgba(var(--s), 0.1) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-wrapper {
+  position: relative;
+}
+
+.status-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: #10b981;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.1);
+  }
+}
+
+.user-info {
+  transition: all 0.3s ease;
+}
+
+.settings-btn {
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.settings-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+}
+
+/* Smooth transitions */
+.sidebar * {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.expanded {
+    transform: translateX(0);
+  }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .sidebar {
+    backdrop-filter: blur(20px);
+  }
+  
+  .menu-icon-wrapper {
+    background: linear-gradient(135deg, 
+      rgba(var(--p), 0.15) 0%, 
+      rgba(var(--s), 0.15) 100%);
+  }
+  
+  .user-profile {
+    background: linear-gradient(135deg, 
+      rgba(var(--p), 0.08) 0%, 
+      rgba(var(--s), 0.08) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Loading animation for menu items */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.menu-item, .menu-item-group {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.menu-item:nth-child(1) { animation-delay: 0.1s; }
+.menu-item:nth-child(2) { animation-delay: 0.2s; }
+.menu-item:nth-child(3) { animation-delay: 0.3s; }
+.menu-item:nth-child(4) { animation-delay: 0.4s; }
+.menu-item:nth-child(5) { animation-delay: 0.5s; }
