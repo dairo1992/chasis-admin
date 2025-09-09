@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 
 import { HeaderComponent } from './header/header.component';
 import { BreadcrumbComponent } from '../components/breadcrumb/breadcrumb.component';
+import { AlertComponent } from '../components/alert/alert.component';
 import { MenuItem } from '../services/route-config.service';
 import { MenuBuilderService, MenuContext } from '../services/menu-builder.service';
 import { FeatureFactory } from '../factories/feature.factory';
@@ -20,7 +21,8 @@ import { FeatureFactory } from '../factories/feature.factory';
     RouterLinkActive,
     CommonModule, 
     HeaderComponent, 
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    AlertComponent
   ]
 })
 export class LayoutComponent implements OnInit {

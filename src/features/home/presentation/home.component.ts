@@ -3,13 +3,14 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GetUserUseCase } from '../../user/application/get-user.usecase';
 import { User } from '../../user/domain/user.entity';
+import { AlertDemoComponent } from './alert-demo/alert-demo.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, AlertDemoComponent]
 })
 export class HomeComponent implements OnInit {
 

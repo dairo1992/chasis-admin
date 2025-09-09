@@ -1,0 +1,88 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-center text-gray-900">Register</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-6">
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input id="email" type="email" formControlName="email"
+          class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        @if(f['email'].touched && f['email'].invalid){
+        <div class="mt-1 text-sm text-red-600">
+          @if(f['email'].errors?.['required']){
+          <div>Email is required.</div>
+          }
+          @if(f['email'].errors?.['email']){
+          <div>Please enter a valid email address.</div>
+          }
+        </div>
+        }
+
+      </div>
+      <div class="relative">
+        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+        <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password"
+          class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-gray-900">
+        <button type="button" (click)="togglePasswordVisibility()"
+          class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+          <svg *ngIf="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+            </path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+            </path>
+          </svg>
+          <svg *ngIf="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 1.274-4.057 5.064-7 9.542-7 .926 0 1.828.148 2.68.422m3.398 3.402A9.952 9.952 0 0121.542 12c-1.274 4.057-5.064 7-9.542 7a10.05 10.05 0 01-1.875-.175M2 2l20 20">
+            </path>
+          </svg>
+        </button>
+        <div *ngIf="f['password'].touched && f['password'].invalid" class="mt-1 text-sm text-red-600">
+          <div *ngIf="f['password'].errors?.['required']">Password is required.</div>
+          <div *ngIf="f['password'].errors?.['minlength']">Password must be at least 8 characters long.</div>
+        </div>
+      </div>
+      <div class="relative">
+        <label for="passwordConfirm" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+        <input id="passwordConfirm" [type]="showPasswordConfirm ? 'text' : 'password'" formControlName="passwordConfirm"
+          class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        <button type="button" (click)="togglePasswordConfirmVisibility()"
+          class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+          <svg *ngIf="!showPasswordConfirm" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+            </path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+            </path>
+          </svg>
+          <svg *ngIf="showPasswordConfirm" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 1.274-4.057 5.064-7 9.542-7 .926 0 1.828.148 2.68.422m3.398 3.402A9.952 9.952 0 0121.542 12c-1.274 4.057-5.064 7-9.542 7a10.05 10.05 0 01-1.875-.175M2 2l20 20">
+            </path>
+          </svg>
+        </button>
+        <div *ngIf="f['passwordConfirm'].touched && f['passwordConfirm'].invalid" class="mt-1 text-sm text-red-600">
+          <div *ngIf="f['passwordConfirm'].errors?.['required']">Password confirmation is required.</div>
+        </div>
+        <div *ngIf="registerForm.errors?.['mismatch'] && (f['passwordConfirm'].touched || f['passwordConfirm'].dirty)"
+          class="mt-1 text-sm text-red-600">
+          Passwords do not match.
+        </div>
+      </div>
+      <div>
+        <button type="submit" [disabled]="registerForm.invalid"
+          class="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
+          Register
+        </button>
+      </div>
+    </form>
+    <p class="text-sm text-center text-gray-600">
+      Already have an account? <a routerLink="/login" class="font-medium text-indigo-600 hover:text-indigo-500">Log
+        in</a>
+    </p>
+  </div>
+</div>

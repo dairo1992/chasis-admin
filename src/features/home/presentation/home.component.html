@@ -1,5 +1,15 @@
-<div>
+<div class="space-y-6">
     @if (user) {
-    <h1>Welcome, {{ user.name }}</h1>
+    <div class="hero bg-gradient-to-r from-primary to-secondary text-primary-content rounded-lg">
+      <div class="hero-content text-center">
+        <div class="max-w-md">
+          <h1 class="mb-5 text-5xl font-bold">¡Bienvenido, {{ user.name }}!</h1>
+          <p class="mb-5">Explora el sistema de alertas implementado con daisyUI</p>
+        </div>
+      </div>
+    </div>
     }
+    
+    <!-- Alert Demo Component -->
+    <app-alert-demo></app-alert-demo>
 </div>

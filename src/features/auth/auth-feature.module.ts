@@ -6,12 +6,7 @@ export class AuthFeatureModule extends FeatureModule {
             name: 'auth',
             displayName: 'Authentication',
             version: '1.0.0',
-            routes: [
-                {
-                    path: 'auth',
-                    children: []
-                }
-            ],
+            routes: [],
             menuItems: []
         };
     }

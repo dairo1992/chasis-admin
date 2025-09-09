@@ -4,6 +4,7 @@ import { LayoutComponent } from '../common/layout/layout.component';
 import { HomeComponent } from '../features/home/presentation/home.component';
 import { FeatureFactory } from '../common/factories/feature.factory';
 import { authGuard } from '../features/auth/application/auth.guard';
+import { publicGuard } from '../features/auth/application/public.guard';
 
 // Importar y registrar features
 import '../features/user/user-feature.module';
@@ -15,8 +16,24 @@ function buildRoutes(): Routes {
 
   return [
     {
-        path: 'auth',
-        loadComponent: () => import('../features/auth/auth.component')
+        path: 'login',
+        loadComponent: () => import('../features/auth/presentation/login/auth.component'),
+        canActivate: [publicGuard]
+    },
+    {
+        path: 'register',
+        loadComponent: () => import('../features/auth/presentation/register/register.component').then(m => m.RegisterComponent),
+        canActivate: [publicGuard]
+    },
+    {
+        path: 'forgot-password',
+        loadComponent: () => import('../features/auth/presentation/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
+        canActivate: [publicGuard]
+    },
+    {
+        path: 'auth', // Add this route
+        loadComponent: () => import('../features/auth/presentation/login/auth.component'),
+        canActivate: [publicGuard] // Apply publicGuard here too
     },
     {
       path: '',
@@ -36,7 +53,7 @@ function buildRoutes(): Routes {
     },
     {
         path: '**',
-        redirectTo: 'auth'
+        redirectTo: '/'
     }
   ];
 }
