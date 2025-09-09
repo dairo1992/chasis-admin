@@ -32,10 +32,11 @@ export class AuthService {
       this.alertService.error('Error: Funcionalidad no disponible en el servidor');
       return of(false);
     }
-    
+
     return from(pb.collection('users').authWithPassword(email, password)).pipe(
       map((authData) => {
-        this.alertService.success(`¡Bienvenido ${authData.record['email']}!`, {
+        const user = authData.record['name'] || authData.record['email'];
+        this.alertService.success(`¡Bienvenido ${user}!`, {
           title: 'Login Exitoso',
           duration: 3000
         });
@@ -46,7 +47,7 @@ export class AuthService {
       }),
       catchError((error) => {
         console.error('Login failed:', error);
-        
+
         // Handle different error types
         if (error.status === 400) {
           this.alertService.error('Credenciales incorrectas. Verifica tu email y contraseña.', {
@@ -64,7 +65,7 @@ export class AuthService {
             duration: 0
           });
         }
-        
+
         return of(false);
       })
     );
@@ -93,7 +94,7 @@ export class AuthService {
       this.alertService.error('Error: Funcionalidad no disponible en el servidor');
       return of(null);
     }
-    
+
     return from(pb.collection('users').create(data)).pipe(
       tap((user) => {
         this.alertService.success(`Cuenta creada exitosamente para ${user['email']}. Ya puedes iniciar sesión.`, {
@@ -103,7 +104,7 @@ export class AuthService {
       }),
       catchError((error) => {
         console.error('Registration failed:', error);
-        
+
         // Handle different registration errors
         if (error.status === 400) {
           const errorData = error.data;
@@ -134,7 +135,7 @@ export class AuthService {
             duration: 0
           });
         }
-        
+
         return throwError(() => error);
       })
     );
@@ -146,7 +147,7 @@ export class AuthService {
       this.alertService.error('Error: Funcionalidad no disponible en el servidor');
       return of(false);
     }
-    
+
     return from(pb.collection('users').requestPasswordReset(email)).pipe(
       map(() => {
         this.alertService.success(`Se ha enviado un enlace de recuperación a ${email}. Revisa tu bandeja de entrada.`, {
@@ -157,7 +158,7 @@ export class AuthService {
       }),
       catchError((error) => {
         console.error('Password reset failed:', error);
-        
+
         if (error.status === 400) {
           this.alertService.error('Email no encontrado. Verifica que esté registrado.', {
             title: 'Email No Encontrado',
@@ -174,7 +175,7 @@ export class AuthService {
             duration: 0
           });
         }
-        
+
         return of(false);
       })
     );

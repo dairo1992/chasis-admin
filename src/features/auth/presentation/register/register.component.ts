@@ -4,13 +4,14 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../infrastructure/auth.service';
 import { AlertService } from '../../../../common/services/alert.service';
+import { AlertComponent } from '../../../../common/components/alert/alert.component';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink]
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, AlertComponent]
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
@@ -23,6 +24,7 @@ export class RegisterComponent {
   isLoading = signal(false);
 
   registerForm: FormGroup = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     passwordConfirm: ['', [Validators.required]],
@@ -54,9 +56,9 @@ export class RegisterComponent {
     }
 
     this.isLoading.set(true);
-    const { email, password, passwordConfirm } = this.registerForm.value;
-    
-    this.authService.register({ email, password, passwordConfirm }).subscribe({
+    const { email, password, passwordConfirm, name } = this.registerForm.value;
+
+    this.authService.register({ email, password, passwordConfirm, name }).subscribe({
       next: (success) => {
         this.isLoading.set(false);
         if (success) {
