@@ -27,7 +27,7 @@ export class AuthService {
     return null;
   }
 
-  login(email: string, password: string): Observable<boolean> {
+  login(email: string, password: string, remember?: boolean): Observable<boolean> {
     if (!this.isBrowser) {
       this.alertService.error('Error: Funcionalidad no disponible en el servidor');
       return of(false);
@@ -40,6 +40,11 @@ export class AuthService {
           title: 'Login Exitoso',
           duration: 3000
         });
+        if (remember) {
+          localStorage.setItem('remember', email);
+        } else {
+          localStorage.removeItem('remember');
+        }
         return true;
       }),
       tap(() => {

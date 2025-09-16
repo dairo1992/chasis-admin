@@ -64,7 +64,7 @@ export default class AuthComponent implements OnInit {
     this.isLoading.set(true);
     const { email, password, remember } = this.loginForm.value;
 
-    this.authService.login(email, password).subscribe({
+    this.authService.login(email, password, remember).subscribe({
       next: (success) => {
         this.isLoading.set(false);
         if (success) {
