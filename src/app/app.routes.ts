@@ -67,7 +67,6 @@ if (typeof ngDevMode !== 'undefined' && ngDevMode) {
   if (!validation.isValid) {
     console.error('Feature validation failed:', validation.errors);
   } else {
-    console.log('✅ ChasisAdmin SSR application bootstrapped successfully');
     console.log('✅ All features validated successfully');
     console.log('📦 Registered features:', FeatureFactory.getAllFeatures().map(f => f.name));
   }

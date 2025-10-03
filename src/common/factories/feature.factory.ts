@@ -43,7 +43,7 @@ export class FeatureFactory {
     }
     
     this.features.set(config.name, config);
-    console.log(`✓ Feature ${config.name} registered successfully`);
+    console.log(`✅ Feature ${config.name} registered successfully`);
   }
   
   static getFeature(name: string): FeatureConfig | undefined {
