@@ -16,24 +16,24 @@ function buildRoutes(): Routes {
 
   return [
     {
-        path: 'login',
-        loadComponent: () => import('../features/auth/presentation/login/auth.component'),
-        canActivate: [publicGuard]
+      path: 'login',
+      loadComponent: () => import('../features/auth/presentation/login/auth.component'),
+      canActivate: [publicGuard]
     },
     {
-        path: 'register',
-        loadComponent: () => import('../features/auth/presentation/register/register.component').then(m => m.RegisterComponent),
-        canActivate: [publicGuard]
+      path: 'register',
+      loadComponent: () => import('../features/auth/presentation/register/register.component').then(m => m.RegisterComponent),
+      canActivate: [publicGuard]
     },
     {
-        path: 'forgot-password',
-        loadComponent: () => import('../features/auth/presentation/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
-        canActivate: [publicGuard]
+      path: 'forgot-password',
+      loadComponent: () => import('../features/auth/presentation/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
+      canActivate: [publicGuard]
     },
     {
-        path: 'auth', // Add this route
-        loadComponent: () => import('../features/auth/presentation/login/auth.component'),
-        canActivate: [publicGuard] // Apply publicGuard here too
+      path: 'auth', // Add this route
+      loadComponent: () => import('../features/auth/presentation/login/auth.component'),
+      canActivate: [publicGuard] // Apply publicGuard here too
     },
     {
       path: '',
@@ -52,8 +52,8 @@ function buildRoutes(): Routes {
       ]
     },
     {
-        path: '**',
-        redirectTo: '/'
+      path: '**',
+      redirectTo: '/'
     }
   ];
 }
@@ -67,7 +67,8 @@ if (typeof ngDevMode !== 'undefined' && ngDevMode) {
   if (!validation.isValid) {
     console.error('Feature validation failed:', validation.errors);
   } else {
-    console.log('✓ All features validated successfully');
-    console.log('Registered features:', FeatureFactory.getAllFeatures().map(f => f.name));
+    console.log('✅ ChasisAdmin SSR application bootstrapped successfully');
+    console.log('✅ All features validated successfully');
+    console.log('📦 Registered features:', FeatureFactory.getAllFeatures().map(f => f.name));
   }
 }
