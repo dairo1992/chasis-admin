@@ -10,7 +10,7 @@ import { AlertService } from '../../../../common/services/alert.service';
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink]
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class ForgotPasswordComponent {
   private fb = inject(FormBuilder);

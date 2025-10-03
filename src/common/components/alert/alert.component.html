@@ -1,0 +1,52 @@
+<div class="fixed top-4 right-4 z-50 space-y-2 max-w-md">
+      @for (alert of alerts(); track alert.id) {
+        <div 
+          class="alert transition-all duration-300 ease-in-out transform"
+          [class]="getAlertClasses(alert.type)"
+          role="alert">
+          
+          <!-- Icon -->
+          <svg 
+            class="w-6 h-6 shrink-0" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24">
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              [attr.d]="alert.icon">
+            </path>
+          </svg>
+          
+          <!-- Content -->
+          <div class="flex-1">
+            @if (alert.title) {
+              <h3 class="font-bold text-sm">{{ alert.title }}</h3>
+            }
+            <div class="text-sm">{{ alert.message }}</div>
+          </div>
+          
+          <!-- Dismiss button -->
+          @if (alert.dismissible) {
+            <button 
+              class="btn btn-sm btn-circle btn-ghost"
+              (click)="dismiss(alert.id)"
+              aria-label="Cerrar alerta">
+              <svg 
+                class="w-4 h-4" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24">
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M6 18L18 6M6 6l12 12">
+                </path>
+              </svg>
+            </button>
+          }
+        </div>
+      }
+    </div>
