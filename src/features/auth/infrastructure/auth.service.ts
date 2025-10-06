@@ -4,6 +4,7 @@ import { from, Observable, of, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { pb } from '../../../common/config/pocketbase';
 import { AlertService } from '../../../common/services/alert.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,7 @@ import { AlertService } from '../../../common/services/alert.service';
 export class AuthService {
   private isBrowser: boolean;
   private alertService = inject(AlertService);
+  private http = inject(HttpClient);
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
@@ -95,55 +97,64 @@ export class AuthService {
   }
 
   register(data: any): Observable<any> {
-    if (!this.isBrowser) {
-      this.alertService.error('Error: Funcionalidad no disponible en el servidor');
-      return of(null);
-    }
+    this.http.post('http://localhost:3000/api/v1/auth/register', data).subscribe({
+      next: (r) => {
+        console.log(r);
+      }, error(err) {
+        console.error(err)
+        // this.alertService.error(`Error: ${err}`);
+      },
+    });
+    return of(null);
+    // if (!this.isBrowser) {
+    //   this.alertService.error('Error: Funcionalidad no disponible en el servidor');
+    //   return of(null);
+    // }
 
-    return from(pb.collection('users').create(data)).pipe(
-      tap((user) => {
-        this.alertService.success(`Cuenta creada exitosamente para ${user['email']}. Ya puedes iniciar sesión.`, {
-          title: 'Registro Exitoso',
-          duration: 5000
-        });
-      }),
-      catchError((error) => {
-        console.error('Registration failed:', error);
+    // return from(pb.collection('users').create(data)).pipe(
+    //   tap((user) => {
+    //     this.alertService.success(`Cuenta creada exitosamente para ${user['email']}. Ya puedes iniciar sesión.`, {
+    //       title: 'Registro Exitoso',
+    //       duration: 5000
+    //     });
+    //   }),
+    //   catchError((error) => {
+    //     console.error('Registration failed:', error);
 
-        // Handle different registration errors
-        if (error.status === 400) {
-          const errorData = error.data;
-          if (errorData?.email) {
-            this.alertService.error('Este email ya está registrado. Usa otro email o inicia sesión.', {
-              title: 'Email Duplicado',
-              duration: 0
-            });
-          } else if (errorData?.password) {
-            this.alertService.error('La contraseña no cumple con los requisitos mínimos.', {
-              title: 'Contraseña Inválida',
-              duration: 0
-            });
-          } else {
-            this.alertService.error('Datos de registro inválidos. Verifica la información.', {
-              title: 'Error de Validación',
-              duration: 0
-            });
-          }
-        } else if (error.status === 0) {
-          this.alertService.error('No se pudo conectar al servidor. Verifica tu conexión a internet.', {
-            title: 'Error de Conexión',
-            duration: 0
-          });
-        } else {
-          this.alertService.error('Error al crear la cuenta. Inténtalo de nuevo.', {
-            title: 'Error del Sistema',
-            duration: 0
-          });
-        }
+    //     // Handle different registration errors
+    //     if (error.status === 400) {
+    //       const errorData = error.data;
+    //       if (errorData?.email) {
+    //         this.alertService.error('Este email ya está registrado. Usa otro email o inicia sesión.', {
+    //           title: 'Email Duplicado',
+    //           duration: 0
+    //         });
+    //       } else if (errorData?.password) {
+    //         this.alertService.error('La contraseña no cumple con los requisitos mínimos.', {
+    //           title: 'Contraseña Inválida',
+    //           duration: 0
+    //         });
+    //       } else {
+    //         this.alertService.error('Datos de registro inválidos. Verifica la información.', {
+    //           title: 'Error de Validación',
+    //           duration: 0
+    //         });
+    //       }
+    //     } else if (error.status === 0) {
+    //       this.alertService.error('No se pudo conectar al servidor. Verifica tu conexión a internet.', {
+    //         title: 'Error de Conexión',
+    //         duration: 0
+    //       });
+    //     } else {
+    //       this.alertService.error('Error al crear la cuenta. Inténtalo de nuevo.', {
+    //         title: 'Error del Sistema',
+    //         duration: 0
+    //       });
+    //     }
 
-        return throwError(() => error);
-      })
-    );
+    //     return throwError(() => error);
+    //   })
+    // );
   }
 
   // Method to request password reset

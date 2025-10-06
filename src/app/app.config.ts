@@ -7,6 +7,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { RouteConfigService } from '../common/services/route-config.service';
 import { GetUserUseCase } from '../features/user/application/get-user.usecase';
 import { UserService } from '../features/user/infrastructure/user.service';
+import { HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,8 +15,9 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
+    provideHttpClient(withInterceptorsFromDi()),
     {
-      provide: GetUserUseCase,
+      provide: [GetUserUseCase],
       useClass: UserService
     },
     // Asegurar que RouteConfigService esté disponible globalmente
