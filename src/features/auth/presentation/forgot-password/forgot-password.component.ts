@@ -27,36 +27,36 @@ export class ForgotPasswordComponent {
 
   get f() { return this.forgotPasswordForm.controls; }
 
-  requestPasswordReset() {
-    if (this.forgotPasswordForm.invalid) {
-      this.forgotPasswordForm.markAllAsTouched();
-      this.alertService.warning('Por favor, ingresa un email válido.', {
-        title: 'Email Requerido',
-        duration: 4000
-      });
-      return;
-    }
+  // requestPasswordReset() {
+  //   if (this.forgotPasswordForm.invalid) {
+  //     this.forgotPasswordForm.markAllAsTouched();
+  //     this.alertService.warning('Por favor, ingresa un email válido.', {
+  //       title: 'Email Requerido',
+  //       duration: 4000
+  //     });
+  //     return;
+  //   }
 
-    this.isLoading.set(true);
-    const { email } = this.forgotPasswordForm.value;
+  //   this.isLoading.set(true);
+  //   const { email } = this.forgotPasswordForm.value;
     
-    this.authService.requestPasswordReset(email).subscribe({
-      next: (success) => {
-        this.isLoading.set(false);
-        if (success) {
-          this.emailSent.set(true);
-          // Navigate back to login after showing success message
-          setTimeout(() => {
-            this.router.navigate(['/auth']);
-          }, 3000);
-        }
-      },
-      error: () => {
-        this.isLoading.set(false);
-        // Error handling is done in AuthService
-      }
-    });
-  }
+  //   this.authService.requestPasswordReset(email).subscribe({
+  //     next: (success) => {
+  //       this.isLoading.set(false);
+  //       if (success) {
+  //         this.emailSent.set(true);
+  //         // Navigate back to login after showing success message
+  //         setTimeout(() => {
+  //           this.router.navigate(['/auth']);
+  //         }, 3000);
+  //       }
+  //     },
+  //     error: () => {
+  //       this.isLoading.set(false);
+  //       // Error handling is done in AuthService
+  //     }
+  //   });
+  // }
 
   goBackToLogin() {
     this.router.navigate(['/auth']);

@@ -15,8 +15,8 @@ import { AlertComponent } from "../../../../common/components/alert/alert.compon
 })
 export default class AuthComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  // private authService = inject(AuthService);
+  // private router = inject(Router);
   private alertService = inject(AlertService);
   private platformId = inject(PLATFORM_ID);
 
@@ -33,9 +33,9 @@ export default class AuthComponent implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      if (this.authService.isAuthenticated()) {
-        this.router.navigate(['/']);
-      }
+      // if (this.authService.isAuthenticated()) {
+      //   this.router.navigate(['/']);
+      // }
 
       const rememberedEmail = localStorage.getItem('remember');
       if (rememberedEmail) {
@@ -52,32 +52,32 @@ export default class AuthComponent implements OnInit {
   }
 
   login() {
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
-      this.alertService.warning('Por favor, completa todos los campos requeridos.', {
-        title: 'Formulario Incompleto',
-        duration: 4000
-      });
-      return;
-    }
+    //   if (this.loginForm.invalid) {
+    //     this.loginForm.markAllAsTouched();
+    //     this.alertService.warning('Por favor, completa todos los campos requeridos.', {
+    //       title: 'Formulario Incompleto',
+    //       duration: 4000
+    //     });
+    //     return;
+    //   }
 
-    this.isLoading.set(true);
-    const { email, password, remember } = this.loginForm.value;
+    //   this.isLoading.set(true);
+    //   const { email, password, remember } = this.loginForm.value;
 
-    this.authService.login(email, password, remember).subscribe({
-      next: (success) => {
-        this.isLoading.set(false);
-        if (success) {
+    //   this.authService.login(email, password, remember).subscribe({
+    //     next: (success) => {
+    //       this.isLoading.set(false);
+    //       if (success) {
 
-          setTimeout(() => {
-            this.router.navigate(['/']);
-          }, 1000);
-        }
-      },
-      error: () => {
-        this.isLoading.set(false);
-        // Error handling is done in AuthService
-      }
-    });
+    //         setTimeout(() => {
+    //           this.router.navigate(['/']);
+    //         }, 1000);
+    //       }
+    //     },
+    //     error: () => {
+    //       this.isLoading.set(false);
+    //       // Error handling is done in AuthService
+    //     }
+    //   });
   }
 }

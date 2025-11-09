@@ -21,11 +21,6 @@ function buildRoutes(): Routes {
       canActivate: [publicGuard]
     },
     {
-      path: 'register',
-      loadComponent: () => import('../features/auth/presentation/register/register.component').then(m => m.RegisterComponent),
-      canActivate: [publicGuard]
-    },
-    {
       path: 'forgot-password',
       loadComponent: () => import('../features/auth/presentation/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
       canActivate: [publicGuard]

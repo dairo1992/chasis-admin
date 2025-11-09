@@ -42,7 +42,7 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit() {
     this.initializeMenuItems();
-    this.user.set(this.authService.getCurrentUser());
+    // this.user.set(this.authService.getCurrentUser());
   }
 
   private initializeMenuItems() {
@@ -130,7 +130,7 @@ export class LayoutComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/auth']);
+    // this.authService.logout();
+    // this.router.navigate(['/auth']);
   }
 }
