@@ -4,9 +4,11 @@ export interface BaseApiModel {
   /** * Nombre legible o clave del endpoint.
    */
   name: string;
-  
+
   /**
    * La URL relativa del endpoint.
    */
   path: string;
+
+  version: string;
 }

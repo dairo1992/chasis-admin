@@ -1,24 +1,49 @@
-// src/app/app.config.ts
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { 
+  ApplicationConfig, 
+  provideZonelessChangeDetection, 
+  APP_INITIALIZER,
+  inject 
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideClientHydration } from '@angular/platform-browser';
+import { Observable } from 'rxjs';
 
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { RouteConfigService } from '../common/services/route-config.service';
 import { GetUserUseCase } from '../features/user/application/get-user.usecase';
 import { UserService } from '../features/user/infrastructure/user.service';
+import { IpService } from '../common/services/ip.service';
+import { authInterceptor } from '../common/interceptors/auth.interceptor';
+
+// Factory function for APP_INITIALIZER
+export function initializeIp(ipService: IpService): () => Observable<any> {
+  return () => ipService.loadIpAddress();
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideClientHydration(withEventReplay()),
+    provideClientHydration(),
+    provideHttpClient(withInterceptors([authInterceptor])),
+
+    // Provider to load IP address on startup
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeIp,
+      deps: [IpService],
+      multi: true,
+    },
+    
+    // Use case provider
     {
       provide: GetUserUseCase,
       useClass: UserService
     },
-    // Asegurar que RouteConfigService esté disponible globalmente
-    RouteConfigService
+    
+    // Global services
+    RouteConfigService,
+    IpService,
   ]
 };
