@@ -1,4 +1,4 @@
-import { FeatureRoute } from "../../common/services/route-config.service";
+import { FeatureRoute } from "../../../../common/services/route-config.service";
 
 export const authRoutes: FeatureRoute[] = [];
 
