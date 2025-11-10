@@ -1,6 +1,13 @@
 import { BaseApiModel } from "../../../../common/interfaces/base-api-model.interface";
 
-export const ApiAuth: Record<string, BaseApiModel> = {
+enum ApiAuthName {
+    LOGIN = 'login',
+    REFRESH = 'refresh',
+    LOGOUT = 'logout'
+}
+
+
+export const ApiAuth: Record<ApiAuthName, BaseApiModel> = {
     login: {
         name: 'login',
         path: 'auth',

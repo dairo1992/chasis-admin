@@ -20,17 +20,17 @@ export class AuthService {
   private readonly apiUrl = environment.apiUrl;
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
-  
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
-  login(email: string, password: string, remember: boolean): Observable<any> {
-    const endpoint = ApiAuth['login'].path;
-    const v = ApiAuth['login'].version;
+  login(email: string, password: string, remember: boolean): Observable<LoginResponse> {
+    const endpoint = ApiAuth.login.path
+    const v = ApiAuth.login.version;
     const url = `${this.apiUrl}/${v}/${endpoint}`;
 
-    return this.http.post<any>(url, { username: email, password }).pipe(
+    return this.http.post<LoginResponse>(url, { username: email, password }).pipe(
       tap(response => {
         if (this.isBrowser && response.access_token) {
           this.storeTokens(response);
@@ -39,7 +39,10 @@ export class AuthService {
           } else {
             localStorage.removeItem('remember');
           }
-          this.alertService.success('Login successful!');
+          this.alertService.success('Inicio de sesión exitoso', {
+            title: `Bienvenido ${response.user}`,
+            duration: 3000
+          });
         }
       })
     );
@@ -65,15 +68,16 @@ export class AuthService {
     this.isRefreshing = true;
     this.refreshTokenSubject.next(null);
 
-    const refreshToken = localStorage.getItem('refresh_token');
+    const refreshToken = sessionStorage.getItem('refresh_token');
     if (!refreshToken) {
       this.isRefreshing = false;
       this.logout();
       return throwError(() => new Error('Refresh token not found'));
     }
 
-    const endpoint = ApiAuth['refresh'].path;
-    const url = `${this.apiUrl}/${endpoint}`;
+    const endpoint = ApiAuth.refresh.path
+    const v = ApiAuth.refresh.version;
+    const url = `${this.apiUrl}/${v}/${endpoint}`;
 
     return this.http.post<LoginResponse>(url, { refreshToken }).pipe(
       tap((response) => {
@@ -95,16 +99,25 @@ export class AuthService {
 
   logout() {
     if (this.isBrowser) {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      localStorage.removeItem('session_id');
-      this.router.navigate(['/login']); // Asumiendo que tienes una ruta de login
+      const endpoint = ApiAuth.logout.path
+      const v = ApiAuth.logout.version;
+      const url = `${this.apiUrl}/${v}/${endpoint}`;
+      this.http.get(url).pipe(
+        tap(() => {
+          sessionStorage.removeItem('access_token');
+          sessionStorage.removeItem('refresh_token');
+          sessionStorage.removeItem('session_id');
+          this.router.navigate(['/auth']);
+        })
+      ).subscribe();
     }
+    console.log('logout'+this.isBrowser);
+    
   }
 
   isAuthenticated(): boolean {
     if (this.isBrowser) {
-      const token = localStorage.getItem('access_token');
+      const token = sessionStorage.getItem('access_token');
       return !!token;
     }
     return false;
@@ -114,12 +127,12 @@ export class AuthService {
     if (!this.isBrowser) {
       return;
     }
-    localStorage.setItem('access_token', tokens.access_token);
+    sessionStorage.setItem('access_token', tokens.access_token);
     if (tokens.refresh_token) {
-      localStorage.setItem('refresh_token', tokens.refresh_token);
+      sessionStorage.setItem('refresh_token', tokens.refresh_token);
     }
     if (tokens.session_id) {
-      localStorage.setItem('session_id', tokens.session_id);
+      sessionStorage.setItem('session_id', tokens.session_id);
     }
   }
 }
