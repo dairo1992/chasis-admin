@@ -55,8 +55,12 @@
 
 .menu-container {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: hidden;
   padding: 1rem 0;
+}
+
+.sidebar.collapsed .menu-container {
+  overflow-y: hidden;
 }
 
 .menu {

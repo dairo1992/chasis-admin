@@ -24,6 +24,12 @@ export class AuthService {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+    if (this.isBrowser) {
+      const user = sessionStorage.getItem('currentUser');
+      if (user) {
+        this._currentUser.set(JSON.parse(user));
+      }
+    }
   }
 
   get currentUser() {
@@ -45,6 +51,7 @@ export class AuthService {
             localStorage.removeItem('remember');
           }
           this._currentUser.set(response);
+          sessionStorage.setItem('currentUser', JSON.stringify(response.user));
           this.alertService.success('Inicio de sesión exitoso', {
             title: `Bienvenido ${response.user}`,
             duration: 3000
@@ -120,6 +127,7 @@ export class AuthService {
           this.router.navigate(['/auth']);
         })
       ).subscribe();
+      sessionStorage.removeItem('currentUser');
     }
   }
 
