@@ -1,13 +1,11 @@
 import { 
   ApplicationConfig, 
   provideZonelessChangeDetection, 
-  APP_INITIALIZER,
-  inject 
+  APP_INITIALIZER
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
 
 import { routes } from './app.routes';
 import { RouteConfigService } from '../common/services/route-config.service';
@@ -15,11 +13,6 @@ import { GetUserUseCase } from '../features/user/application/get-user.usecase';
 import { UserService } from '../features/user/infrastructure/user.service';
 import { IpService } from '../common/services/ip.service';
 import { authInterceptor } from '../common/interceptors/auth.interceptor';
-
-// Factory function for APP_INITIALIZER
-export function initializeIp(ipService: IpService): () => Observable<any> {
-  return () => ipService.loadIpAddress();
-}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     // Provider to load IP address on startup
     {
       provide: APP_INITIALIZER,
-      useFactory: initializeIp,
+      useFactory: (ipService: IpService) => () => ipService.loadIpAddress(),
       deps: [IpService],
       multi: true,
     },
@@ -44,6 +37,5 @@ export const appConfig: ApplicationConfig = {
     
     // Global services
     RouteConfigService,
-    IpService,
   ]
 };

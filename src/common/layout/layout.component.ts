@@ -9,7 +9,7 @@ import { AlertComponent } from '../components/alert/alert.component';
 import { MenuItem } from '../services/route-config.service';
 import { MenuBuilderService, MenuContext } from '../services/menu-builder.service';
 import { FeatureFactory } from '../factories/feature.factory';
-import { RecordModel } from 'pocketbase';
+import { LoginResponse } from '../../features/auth/interfaces/login-response.interface';
 import { AuthService } from '../../features/auth/infrastructure/auth.service';
 
 @Component({
@@ -31,10 +31,10 @@ export class LayoutComponent implements OnInit {
   private menuBuilderService = inject(MenuBuilderService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  currentUser = signal<LoginResponse | null>(null);
 
   isCollapsed = false;
   isExpandedOnHover = false;
-  user = signal<RecordModel | null>(null);
 
   // Signals para reactive updates
   menuItems = signal<MenuItem[]>([]);
@@ -42,6 +42,7 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit() {
     this.initializeMenuItems();
+    this.currentUser.set(this.authService.currentUser());
     // this.user.set(this.authService.getCurrentUser());
   }
 

@@ -5,6 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from '../../features/auth/infrastructure/auth.service';
 import { IpService } from '../services/ip.service';
+import { ApiAuth } from '../../features/auth/application/route/api-auth';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const ipService = inject(IpService);
@@ -34,6 +35,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return throwError(() => error);
       }
 
+      // Don't refresh token for logout request
+      if (req.url.includes(ApiAuth.logout.path)) {
+        return throwError(() => error);
+      }
+
       // On 401 error, try to refresh the token
       return authService.refreshToken().pipe(
         switchMap((response: any) => {
@@ -51,8 +57,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 // Helper function to add the auth token and session ID to headers
 const addTokenHeader = (req: HttpRequest<any>): HttpRequest<any> => {
-  const accessToken = localStorage.getItem('access_token');
-  const sessionId = localStorage.getItem('session_id');
+  const accessToken = sessionStorage.getItem('access_token');
+  const sessionId = sessionStorage.getItem('session_id');
   
   let headers = req.headers;
 

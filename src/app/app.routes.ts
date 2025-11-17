@@ -16,11 +16,6 @@ function buildRoutes(): Routes {
 
   return [
     {
-      path: 'login',
-      loadComponent: () => import('../features/auth/presentation/login/auth.component'),
-      canActivate: [publicGuard]
-    },
-    {
       path: 'forgot-password',
       loadComponent: () => import('../features/auth/presentation/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
       canActivate: [publicGuard]
@@ -55,14 +50,3 @@ function buildRoutes(): Routes {
 
 // Exportar rutas
 export const routes: Routes = buildRoutes();
-
-// Validar configuración de features en desarrollo
-if (typeof ngDevMode !== 'undefined' && ngDevMode) {
-  const validation = FeatureFactory.validateFeatures();
-  if (!validation.isValid) {
-    console.error('Feature validation failed:', validation.errors);
-  } else {
-    console.log('✅ All features validated successfully');
-    console.log('📦 Registered features:', FeatureFactory.getAllFeatures().map(f => f.name));
-  }
-}

@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -20,9 +20,14 @@ export class AuthService {
   private readonly apiUrl = environment.apiUrl;
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private readonly _currentUser = signal<LoginResponse | null>(null);
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+  }
+
+  get currentUser() {
+    return this._currentUser;
   }
 
   login(email: string, password: string, remember: boolean): Observable<LoginResponse> {
@@ -39,6 +44,7 @@ export class AuthService {
           } else {
             localStorage.removeItem('remember');
           }
+          this._currentUser.set(response);
           this.alertService.success('Inicio de sesión exitoso', {
             title: `Bienvenido ${response.user}`,
             duration: 3000
@@ -103,6 +109,10 @@ export class AuthService {
       const v = ApiAuth.logout.version;
       const url = `${this.apiUrl}/${v}/${endpoint}`;
       this.http.get(url).pipe(
+        catchError(err => {
+          console.error('Logout failed on server', err);
+          return throwError(() => err);
+        }),
         tap(() => {
           sessionStorage.removeItem('access_token');
           sessionStorage.removeItem('refresh_token');
@@ -111,8 +121,6 @@ export class AuthService {
         })
       ).subscribe();
     }
-    console.log('logout'+this.isBrowser);
-    
   }
 
   isAuthenticated(): boolean {

@@ -71,9 +71,13 @@ export default class AuthComponent implements OnInit {
           this.router.navigate(['/']);
         }
       },
-      error: () => {
+      error: (err) => {
         this.isLoading.set(false);
-        // Error handling is done in AuthService
+        this.alertService.error(err.error.message, {
+          title: 'Error de autenticación',
+          dismissible: true,
+          duration: 8000
+        })
       }
     });
   }

@@ -7,20 +7,72 @@
 
     <!-- Sidebar Header -->
     <div class="sidebar-header">
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-5">
         <div class="icon-wrapper">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
-        <span class="app-title" *ngIf="!isCollapsed || isExpandedOnHover">Chasis Admin</span>
+        <span class="app-title">
+          @if(!isCollapsed || isExpandedOnHover){
+          {{currentUser()?.user?.firstName}}
+          }
+        </span>
       </div>
     </div>
 
     <!-- Dynamic Menu -->
     <div class="menu-container">
       <ul class="menu">
-        <ng-container *ngFor="let menuItem of menuItems()">
+        @for (menuItem of menuItems(); track menuItem.path) {
+        <li class="menu-item-group">
+          @if(menuItem.children && menuItem.children.length > 0){
+          <details [open]="isMenuItemExpanded(menuItem.label)">
+            <summary class="menu-summary" (click)="toggleMenuItem(menuItem.label)">
+              <div class="flex items-center gap-3">
+                <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menuItem.icon"></path>
+                </svg>
+                @if (!isCollapsed || isExpandedOnHover) {
+                <span class="menu-text">{{ menuItem.label }}</span>
+                }
+              </div>
+            </summary>
+            @if(!isCollapsed || isExpandedOnHover){}
+            <ul>
+              @for (subItem of menuItem.children; track subItem.path) {
+              <li>
+                <a [routerLink]="subItem.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="onMenuItemClick()" class="submenu-link">
+                  <svg class="submenu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="subItem.icon"></path>
+                  </svg>
+                  <span>{{ subItem.label }}</span>
+                </a>
+              </li>
+              }
+            </ul>
+          </details>
+          }
+          @else{
+        <li class="menu-item">
+          <a [routerLink]="menuItem.path || '/'" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+            (click)="onMenuItemClick()" class="menu-link">
+            <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="menuItem.icon"></path>
+            </svg>
+            @if(!isCollapsed || isExpandedOnHover){
+            <span class="menu-text">{{ menuItem.label }}</span>
+            }
+          </a>
+        </li>
+        }
+        </li>
+        }
+        <!-- <ng-container *ngFor="let menuItem of menuItems()">
           <li class="menu-item-group" *ngIf="menuItem.children && menuItem.children.length > 0; else simpleItem">
             <details [open]="isMenuItemExpanded(menuItem.label)">
               <summary class="menu-summary" (click)="toggleMenuItem(menuItem.label)">
@@ -59,7 +111,7 @@
               </a>
             </li>
           </ng-template>
-        </ng-container>
+        </ng-container> -->
       </ul>
     </div>
 
@@ -69,8 +121,8 @@
       <div class="user-profile group">
         <div class="flex items-center gap-3">
           <div class="user-info flex-1 min-w-0">
-            <p class="text-sm font-semibold text-base-content truncate">{{ user()?.['name'] }}</p>
-            <p class="text-xs text-base-content/60 truncate">{{ user()?.['email'] }}</p>
+            <p class="text-sm font-semibold text-base-content truncate">{{ currentUser()?.user?.firstName }}</p>
+            <p class="text-xs text-base-content/60 truncate">{{ currentUser()?.user?.email }}</p>
             <div class="flex items-center gap-1 mt-1 cursor-pointer" (click)="logout()">
               <button class="settings-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -89,7 +141,7 @@
     <div class="p-4 flex justify-center">
       <div class="avatar placeholder">
         <div class="bg-gradient-to-br from-primary to-secondary text-white rounded-full w-8 h-8 shadow-lg">
-          <span class="text-xs font-bold text-center">{{ user()?.['name'].substring(0, 2).toUpperCase() }}</span>
+          <span class="text-xs font-bold text-center">DB</span>
         </div>
       </div>
     </div>
