@@ -1,5 +1,5 @@
 // src/common/layout/layout.component.ts
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { RouterOutlet, Router, RouterLinkActive, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -24,10 +24,10 @@ import { AuthService } from '../../features/auth/infrastructure/auth.service';
     CommonModule,
     HeaderComponent,
     BreadcrumbComponent,
-    AlertComponent
-  ]
+    AlertComponent,
+  ],
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent {
   private menuBuilderService = inject(MenuBuilderService);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -40,38 +40,42 @@ export class LayoutComponent implements OnInit {
   menuItems = signal<MenuItem[]>([]);
   expandedMenuItems = signal<Set<string>>(new Set());
 
-  ngOnInit() {
-    this.initializeMenuItems();
-    this.currentUser.set(this.authService.currentUser());
-    // this.user.set(this.authService.getCurrentUser());
+  constructor() {
+    effect(() => {
+      const user = this.authService.currentUser();
+      this.currentUser.set(user);
+      this.buildDynamicMenu(user);
+    });
   }
 
-  private initializeMenuItems() {
-    // Obtener items del menú desde la factory
-    const rawMenuItems = FeatureFactory.getAllMenuItems();
+  private buildDynamicMenu(user: LoginResponse | null) {
+    if (!user || !user.navigation) {
+      this.menuItems.set([]);
+      return;
+    }
 
-    // Agregar item de Home manualmente
     const homeMenuItem: MenuItem = {
       label: 'Home',
-      icon: 'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25',
+      icon: 'tdesignHome',
       path: '/',
-      order: 1
+      order: 0, // Home should be first
     };
 
-    const allMenuItems = [homeMenuItem, ...rawMenuItems];
+    const dynamicItems: MenuItem[] = user.navigation.map((navItem) => ({
+      label: navItem.label || '',
+      path: navItem.route || '',
+      icon: navItem.icon || '', // Assuming icon is a string for now
+      order: navItem.order || 99,
+      // You can also map permissions if your menu logic uses them
+      // permissions: navItem.permissions
+    }));
 
-    // Construir menú con contexto del usuario
-    const menuContext: MenuContext = {
-      userRoles: ['admin', 'user'], // Esto vendría del servicio de autenticación
-      permissions: {
-        '/users': true,
-        '/dashboard': true,
-        '/settings': false
-      }
-    };
+    const allItems = [homeMenuItem, ...dynamicItems];
 
-    const processedMenu = this.menuBuilderService.buildMenu(allMenuItems, menuContext);
-    this.menuItems.set(processedMenu);
+    // Sort items by order
+    allItems.sort((a, b) => (a.order || 99) - (b.order || 99));
+
+    this.menuItems.set(allItems);
   }
 
   toggleSidebar() {
@@ -117,11 +121,6 @@ export class LayoutComponent implements OnInit {
   navigateTo(path: string) {
     this.router.navigate([path]);
     this.onMenuItemClick();
-  }
-
-  // Método para recargar el menú (útil para cambios dinámicos)
-  reloadMenu() {
-    this.initializeMenuItems();
   }
 
   // Método para obtener el breadcrumb de la ruta actual

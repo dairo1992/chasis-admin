@@ -51,9 +51,9 @@ export class AuthService {
             localStorage.removeItem('remember');
           }
           this._currentUser.set(response);
-          sessionStorage.setItem('currentUser', JSON.stringify(response.user));
+          sessionStorage.setItem('currentUser', JSON.stringify(response));
           this.alertService.success('Inicio de sesión exitoso', {
-            title: `Bienvenido ${response.user}`,
+            title: `Bienvenido ${response.user?.firstName}`,
             duration: 3000
           });
         }
