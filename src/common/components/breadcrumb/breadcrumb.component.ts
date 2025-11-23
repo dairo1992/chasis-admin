@@ -1,10 +1,9 @@
-// src/common/components/breadcrumb/breadcrumb.component.ts
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter, map } from 'rxjs/operators';
 import { MenuBuilderService } from '../../services/menu-builder.service';
-import { FeatureFactory } from '../../factories/feature.factory';
+import { MENU_ITEMS } from '../../services/menu';
 
 export interface BreadcrumbItem {
     label: string;
@@ -73,7 +72,7 @@ export class BreadcrumbComponent implements OnInit {
     }
 
     private buildBreadcrumb(): BreadcrumbItem[] {
-        const menuItems = FeatureFactory.getAllMenuItems();
+        const menuItems = MENU_ITEMS;
         const currentPath = this.router.url;
 
         // Obtener breadcrumb del menu builder

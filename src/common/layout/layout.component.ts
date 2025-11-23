@@ -8,7 +8,7 @@ import { BreadcrumbComponent } from '../components/breadcrumb/breadcrumb.compone
 import { AlertComponent } from '../components/alert/alert.component';
 import { MenuItem } from '../services/route-config.service';
 import { MenuBuilderService, MenuContext } from '../services/menu-builder.service';
-import { FeatureFactory } from '../factories/feature.factory';
+
 import { LoginResponse } from '../../features/auth/interfaces/login-response.interface';
 import { AuthService } from '../../features/auth/infrastructure/auth.service';
 
